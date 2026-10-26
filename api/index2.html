@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌸 20/10 - Món Quà Đặc Biệt</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;user-select:none}
+body,html{width:100%;height:100%;overflow:hidden;background:radial-gradient(circle at 50% 48%,#2b081d 0%,#14030d 58%,#060104 100%);font-family:'Plus Jakarta Sans',sans-serif;color:#fff}
+#vortexCanvas{position:fixed;inset:0;width:100%;height:100%;z-index:1;cursor:pointer}
+
+.loop-runner{position:fixed;z-index:25;pointer-events:none;padding:9px 22px;border-radius:999px;background:linear-gradient(90deg,rgba(255,42,95,.88),rgba(255,111,97,.88));border:2px solid rgba(255,230,240,.9);box-shadow:0 0 22px rgba(255,60,120,.8),0 6px 20px rgba(0,0,0,.5);font-size:15px;font-weight:800;letter-spacing:1.5px;color:#fff;white-space:nowrap;text-shadow:0 2px 6px rgba(0,0,0,.45);animation:borderLoop 14s linear infinite}
+@keyframes borderLoop{
+  0%{top:16px;left:16px;transform:translate(0,0)}
+  25%{top:16px;left:calc(100vw - 16px);transform:translate(-100%,0)}
+  50%{top:calc(100vh - 16px);left:calc(100vw - 16px);transform:translate(-100%,-100%)}
+  75%{top:calc(100vh - 16px);left:16px;transform:translate(0,-100%)}
+  100%{top:16px;left:16px;transform:translate(0,0)}
+}
+
+.hero-ui{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;padding:20px;text-align:center;transition:opacity .5s ease,transform .5s ease}
+.hero-ui.hide{opacity:0;transform:scale(1.06);pointer-events:none}
+.class-badge{display:inline-flex;align-items:center;gap:10px;padding:9px 26px;border-radius:999px;background:rgba(95,20,50,.82);border:1.5px solid rgba(255,190,215,.6);backdrop-filter:blur(8px);box-shadow:0 8px 25px rgba(0,0,0,.55);margin-bottom:16px}
+.badge-dot{width:10px;height:10px;border-radius:50%;background:#ff2a6d;box-shadow:0 0 10px #ff2a6d}
+.badge-text{font-size:13.5px;font-weight:700;letter-spacing:2.4px;color:#ffd8e6;text-transform:uppercase}
+.main-title{font-family:'Playfair Display',serif;font-size:clamp(40px,7vw,76px);font-weight:800;letter-spacing:3px;background:linear-gradient(180deg,#ffffff 0%,#ffd8e8 48%,#ff7eb3 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 4px 18px rgba(0,0,0,.95)) drop-shadow(0 0 28px rgba(140,10,60,.85));margin-bottom:14px}
+.sub-text{font-size:clamp(16px,2.3vw,24px);font-weight:700;color:#ffffff;text-shadow:0 2px 14px rgba(0,0,0,.95),0 0 22px rgba(255,40,110,.9);padding:7px 22px;border-radius:999px;background:rgba(45,8,26,.65);border:1px solid rgba(255,160,195,.35)}
+.enter-btn-wrap{margin-top:26px;opacity:0;transform:translateY(22px) scale(.94);transition:all .55s cubic-bezier(.22,1,.36,1);pointer-events:none}
+.enter-btn-wrap.visible{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
+.enter-btn{display:flex;align-items:center;gap:18px;padding:16px 40px;border-radius:999px;border:2.5px solid rgba(255,230,238,.92);background:linear-gradient(92deg,#ff2a5f 0%,#ff4d58 52%,#ff6f61 100%);box-shadow:0 14px 40px rgba(255,45,95,.65),0 0 30px rgba(255,95,130,.5);color:#fff;cursor:pointer;transition:transform .22s ease,box-shadow .22s ease}
+.enter-btn:hover{transform:scale(1.05) translateY(-2px);box-shadow:0 18px 48px rgba(255,45,95,.85)}
+.enter-btn:active{transform:scale(.98)}
+.env-icon{width:46px;height:46px;flex-shrink:0}
+.btn-copy{text-align:left;display:flex;flex-direction:column;gap:2px}
+.btn-copy-title{font-size:23px;font-weight:800;letter-spacing:1px;line-height:1.1}
+.btn-copy-sub{font-size:14px;font-weight:600;color:#ffeef2}
+.arrow-icon{font-size:24px;font-weight:800;margin-left:8px;transition:transform .22s ease}
+.enter-btn:hover .arrow-icon{transform:translateX(6px)}
+
+.letter-modal{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(12,2,8,.84);opacity:0;pointer-events:none;transition:opacity .45s ease}
+.letter-modal.open{opacity:1;pointer-events:auto}
+.letter-shell{position:relative;width:100%;max-width:740px;max-height:92vh;display:flex;flex-direction:column;background:linear-gradient(165deg,#fffbfd 0%,#fff0f6 55%,#ffe4ef 100%);border-radius:28px;border:3px solid #fff;box-shadow:0 24px 70px rgba(0,0,0,.82);overflow:hidden;transform:translateY(28px) scale(.94);transition:transform .45s cubic-bezier(.22,1,.36,1)}
+.letter-modal.open .letter-shell{transform:translateY(0) scale(1)}
+
+.floating-close-x{position:absolute;top:14px;right:18px;z-index:30;width:42px;height:42px;border-radius:50%;border:2px solid #fff;background:#ff2a5f;color:#fff;font-size:20px;font-weight:800;cursor:pointer;box-shadow:0 6px 18px rgba(255,42,95,.45);display:flex;align-items:center;justify-content:center;transition:transform .2s,background .2s}
+.floating-close-x:hover{background:#d90452;transform:scale(1.08) rotate(90deg)}
+
+.page-tabs-top{display:flex;align-items:center;gap:6px;padding:14px 68px 12px 22px;background:rgba(255,230,240,.75);border-bottom:1.5px solid rgba(255,140,180,.3);flex-wrap:wrap}
+.tab-dot-btn{padding:6px 12px;border-radius:999px;border:1.5px solid #ff9ebb;background:#fff;color:#a31645;font-size:12px;font-weight:800;cursor:pointer;transition:.2s}
+.tab-dot-btn.active{background:linear-gradient(90deg,#ff2a5f,#ff6f61);color:#fff;border-color:transparent;box-shadow:0 4px 12px rgba(255,42,95,.35)}
+
+.letter-scroll{overflow-y:auto;padding:28px 30px 24px 30px;color:#3d1024;flex:1}
+.letter-scroll::-webkit-scrollbar{width:7px}
+.letter-scroll::-webkit-scrollbar-thumb{background:#ff85b3;border-radius:99px}
+
+.book-page{display:none;animation:fadePage .38s ease}
+.book-page.active{display:block}
+@keyframes fadePage{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.letter-tag{display:inline-block;padding:6px 16px;border-radius:999px;background:linear-gradient(90deg,#ff2a5f,#ff6f61);color:#fff;font-size:12px;font-weight:800;letter-spacing:1.4px;margin-bottom:10px}
+.letter-heading{font-family:'Dancing Script',cursive;font-size:clamp(32px,4.8vw,45px);color:#b81448;line-height:1.2;margin-bottom:14px}
+
+.apology-note{background:#fff7fa;border:1.5px dashed #ff85b3;border-radius:14px;padding:12px 16px;margin-bottom:16px;font-size:14px;font-style:italic;color:#8a2248;font-weight:600;text-align:center}
+
+.teacher-photo-wrap{display:flex;flex-direction:column;align-items:center;margin:14px 0 20px 0}
+.teacher-photo-frame{width:230px;aspect-ratio:3/4;background:#f7f2eb;border:3px solid #b81448;border-radius:18px;box-shadow:0 14px 32px rgba(184,20,72,.22);overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center}
+.teacher-photo-frame img{width:100%;height:100%;object-fit:cover;display:block}
+.teacher-photo-caption{margin-top:8px;font-size:13px;font-weight:800;color:#b81448;letter-spacing:1px}
+
+.wish-banner{background:linear-gradient(135deg,#fff2f7 0%,#ffdce9 100%);border:2px dashed #ff3e78;border-radius:18px;padding:16px 20px;margin-bottom:16px;text-align:center}
+.wish-banner-main{font-size:18.5px;font-weight:800;color:#d00f4e;margin-bottom:5px}
+.wish-banner-sub{font-size:15.5px;font-weight:700;color:#6e1233;line-height:1.45}
+
+.poem-continuous{background:#fff;border-left:4px solid #ff2a5f;border-radius:16px;padding:20px 22px;margin:16px 0;box-shadow:0 8px 24px rgba(180,30,80,.08);text-align:center}
+.poem-title{font-size:13px;font-weight:800;letter-spacing:1.5px;color:#ff2a5f;text-transform:uppercase;margin-bottom:10px}
+.poem-lines{font-family:'Playfair Display',serif;font-style:italic;font-size:17px;line-height:1.9;color:#3d1024;font-weight:600}
+
+.continuous-prose{background:rgba(255,255,255,.9);border:1.5px solid #ffc2d9;border-radius:18px;padding:20px 22px;font-size:16px;line-height:1.82;color:#4a122b;font-weight:500;text-align:justify}
+.continuous-prose strong{color:#c9184a;font-weight:800}
+
+.scrapbook-paper{background:#f7f2eb;background-image:radial-gradient(rgba(180,150,120,.12) 1px,transparent 0);background-size:22px 22px;border-radius:22px;padding:30px 24px;border:2px solid #e6d7c8;box-shadow:inset 0 0 35px rgba(160,125,95,.12);margin-top:10px}
+.scrapbook-subtitle{text-align:center;font-size:13px;letter-spacing:2.5px;text-transform:uppercase;color:#7a6252;font-weight:700;margin-bottom:26px}
+
+.scrapbook-list{display:flex;flex-direction:column;gap:38px}
+.scrapbook-item{display:flex;align-items:center;gap:24px;position:relative}
+.scrapbook-item:nth-child(even){flex-direction:row-reverse}
+
+.photo-frame-wrap{position:relative;width:48%;flex-shrink:0}
+.washi-tape{position:absolute;z-index:5;background:rgba(243,211,192,.78);box-shadow:0 2px 6px rgba(0,0,0,.08);pointer-events:none}
+.scrapbook-item:nth-child(odd) .washi-tape{width:28px;height:130px;left:-12px;top:24px;transform:rotate(-2deg)}
+.scrapbook-item:nth-child(even) .washi-tape{width:140px;height:28px;right:18px;top:-13px;transform:rotate(2deg)}
+
+.photo-frame{width:100%;aspect-ratio:3/4;background:#ebe3d9;border:2.5px solid #282320;box-shadow:0 12px 28px rgba(45,30,20,.16);overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center}
+.photo-frame img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease}
+.photo-frame:hover img{transform:scale(1.04)}
+.img-fallback{padding:16px;text-align:center;color:#7a5c49;font-size:13px;font-weight:700;line-height:1.5}
+
+.caption-card{flex:1;background:rgba(255,255,255,.88);border:1.5px solid #e2cfc0;border-left:4px solid #ff2a5f;border-radius:16px;padding:18px 20px;box-shadow:0 8px 22px rgba(70,40,25,.07);text-align:left}
+.scrapbook-item:nth-child(even) .caption-card{border-left:1.5px solid #e2cfc0;border-right:4px solid #ff2a5f}
+.girl-number{font-size:11.5px;font-weight:800;letter-spacing:2px;color:#ff2a5f;text-transform:uppercase;margin-bottom:4px}
+.girl-name{font-family:'Playfair Display',serif;font-size:22px;font-weight:800;color:#2e1520;margin-bottom:8px}
+.girl-caption{font-size:14.8px;line-height:1.68;color:#4f3529;font-weight:500;user-select:text;min-height:48px}
+.girl-quote{margin-top:10px;padding-top:8px;border-top:1px dashed #dfcbbd;font-size:12px;letter-spacing:1.6px;text-transform:uppercase;color:#8c6d5c;font-weight:700}
+
+.final-girls-wish{margin-top:36px;background:linear-gradient(135deg,#fff0f5 0%,#ffd6e6 100%);border:2.5px dashed #ff2a5f;border-radius:20px;padding:24px 22px;text-align:center;box-shadow:0 10px 28px rgba(255,42,95,.14)}
+.final-wish-title{font-family:'Dancing Script',cursive;font-size:34px;color:#c9184a;margin-bottom:10px}
+.final-wish-text{font-size:16px;line-height:1.8;color:#4a122b;font-weight:600;text-align:justify}
+
+.letter-footer{padding:14px 24px;background:rgba(255,235,243,.92);border-top:1.5px solid rgba(255,105,155,.3);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.nav-group{display:flex;align-items:center;gap:8px}
+.nav-btn{padding:10px 18px;border-radius:999px;border:1.5px solid #ff4d79;background:#fff;color:#c9184a;font-size:13.5px;font-weight:800;cursor:pointer;transition:.2s}
+.nav-btn:hover:not(:disabled){background:#ff2a5f;color:#fff}
+.nav-btn:disabled{opacity:.4;cursor:not-allowed}
+.page-indicator{font-size:13.5px;font-weight:800;color:#9e1946;padding:0 6px}
+
+.footer-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.cheer-btn{padding:10px 18px;border-radius:999px;border:none;background:linear-gradient(90deg,#ff2a5f,#ff6f61);color:#fff;font-size:13.5px;font-weight:800;cursor:pointer;box-shadow:0 6px 18px rgba(255,45,95,.35);transition:transform .2s}
+.cheer-btn:hover{transform:translateY(-2px)}
+.bottom-close-x{padding:10px 16px;border-radius:999px;border:1.5px solid #ff4d79;background:#fff0f5;color:#c9184a;font-size:13.5px;font-weight:800;cursor:pointer;transition:.2s}
+.bottom-close-x:hover{background:#ff2a5f;color:#fff}
+
+.floating-toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(25px);z-index:99;background:#fff;color:#c9184a;padding:11px 24px;border-radius:999px;font-weight:800;font-size:14.5px;box-shadow:0 10px 30px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:all .35s ease}
+.floating-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:620px){
+  .letter-scroll{padding:20px 14px}
+  .scrapbook-item,.scrapbook-item:nth-child(even){flex-direction:column}
+  .photo-frame-wrap{width:88%}
+  .caption-card{width:100%}
+  .letter-footer{justify-content:center}
+  .loop-runner{font-size:12.5px;padding:7px 16px}
+}
+</style>
+</head>
+<body>
+
+<canvas id="vortexCanvas"></canvas>
+
+<div class="loop-runner">🌸 Chúc Mừng 20/10 🌸</div>
+
+<div class="hero-ui" id="heroUi">
+  <div class="class-badge">
+    <span class="badge-dot"></span>
+    <span class="badge-text">20 THÁNG 10</span>
+  </div>
+
+  <h1 class="main-title">MÓN QUÀ ĐẶC BIỆT</h1>
+
+  <div class="sub-text" id="subText">
+    🌸 Một đóa hoa ngát hương đang hé nở... 🌸
+  </div>
+
+  <div class="enter-btn-wrap" id="enterBtnWrap">
+    <button class="enter-btn" id="openLetterBtn">
+      <svg class="env-icon" viewBox="0 0 64 64" fill="none">
+        <rect x="6" y="18" width="52" height="38" rx="6" fill="#E8F1F5" stroke="#1D2D3A" stroke-width="3.5"/>
+        <path d="M6 22L32 41L58 22" stroke="#1D2D3A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M8 54L24 38M56 54L40 38" stroke="#9FB6C6" stroke-width="3" stroke-linecap="round"/>
+        <path d="M32 29C32 29 20 21 20 13.5C20 9.5 23.2 6.5 27 6.5C29.4 6.5 31.3 7.8 32 9.6C32.7 7.8 34.6 6.5 37 6.5C40.8 6.5 44 9.5 44 13.5C44 21 32 29 32 29Z" fill="#FF1E42" stroke="#1D2D3A" stroke-width="3"/>
+      </svg>
+      <div class="btn-copy">
+        <span class="btn-copy-title">VÀO THƯ</span>
+        <span class="btn-copy-sub">Mở bức thư chúc mừng 20/10</span>
+      </div>
+      <span class="arrow-icon">➔</span>
+    </button>
+  </div>
+</div>
+
+<div class="letter-modal" id="letterModal">
+  <div class="letter-shell">
+    <button class="floating-close-x" id="closeTopBtn" title="Đóng thư">✕</button>
+
+    <div class="page-tabs-top">
+      <button class="tab-dot-btn active" onclick="goToPage(1)">Trang 1</button>
+      <button class="tab-dot-btn" onclick="goToPage(2)">Trang 2</button>
+      <button class="tab-dot-btn" onclick="goToPage(3)">Trang 3</button>
+      <button class="tab-dot-btn" onclick="goToPage(4)">Trang 4</button>
+      <button class="tab-dot-btn" onclick="goToPage(5)">Trang 5</button>
+    </div>
+
+    <div class="letter-scroll" id="letterScroll">
+
+      <!-- TRANG 1 -->
+      <div class="book-page active" id="page1">
+        <span class="letter-tag">TRANG 1</span>
+        <h2 class="letter-heading">Tiêu Đề Trang 1</h2>
+
+        <div class="wish-banner">
+          <div class="wish-banner-main"></div>
+          <div class="wish-banner-sub"></div>
+        </div>
+
+        <div class="poem-continuous">
+          <div class="poem-title">✨ THƠ ✨</div>
+          <div class="poem-lines"></div>
+        </div>
+
+        <div class="continuous-prose"></div>
+      </div>
+
+      <!-- TRANG 2 -->
+      <div class="book-page" id="page2">
+        <span class="letter-tag">TRANG 2</span>
+        <h2 class="letter-heading">Tiêu Đề Trang 2</h2>
+
+        <div class="wish-banner">
+          <div class="wish-banner-main"></div>
+          <div class="wish-banner-sub"></div>
+        </div>
+
+        <div class="poem-continuous">
+          <div class="poem-title">✨ THƠ ✨</div>
+          <div class="poem-lines"></div>
+        </div>
+
+        <div class="continuous-prose"></div>
+      </div>
+
+      <!-- TRANG 3 -->
+      <div class="book-page" id="page3">
+        <span class="letter-tag">TRANG 3</span>
+        <h2 class="letter-heading">Tiêu Đề Trang 3</h2>
+
+        <div class="teacher-photo-wrap">
+          <div class="teacher-photo-frame">
+            <img src="" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+            <div class="img-fallback" style="display:none">📷 Khung Ảnh</div>
+          </div>
+          <div class="teacher-photo-caption"></div>
+        </div>
+
+        <div class="wish-banner">
+          <div class="wish-banner-main"></div>
+          <div class="wish-banner-sub"></div>
+        </div>
+
+        <div class="poem-continuous">
+          <div class="poem-title">✨ THƠ ✨</div>
+          <div class="poem-lines"></div>
+        </div>
+
+        <div class="continuous-prose"></div>
+      </div>
+
+      <!-- TRANG 4 -->
+      <div class="book-page" id="page4">
+        <span class="letter-tag">TRANG 4</span>
+        <h2 class="letter-heading">Tiêu Đề Trang 4</h2>
+
+        <div class="wish-banner">
+          <div class="wish-banner-main"></div>
+          <div class="wish-banner-sub"></div>
+        </div>
+
+        <div class="poem-continuous">
+          <div class="poem-title">✨ THƠ ✨</div>
+          <div class="poem-lines"></div>
+        </div>
+
+        <div class="continuous-prose"></div>
+      </div>
+
+      <!-- TRANG 5: ALBUM ẢNH -->
+      <div class="book-page" id="page5">
+        <span class="letter-tag">📸 ALBUM ẢNH</span>
+        <h2 class="letter-heading">Tiêu Đề Album</h2>
+
+        <div class="scrapbook-paper">
+          <div class="scrapbook-subtitle">✨ DANH SÁCH ẢNH ✨</div>
+
+          <div class="scrapbook-list" id="girlsGallery"></div>
+
+          <div class="final-girls-wish">
+            <div class="final-wish-title">💖 Lời Chúc Kết 💖</div>
+            <div class="final-wish-text"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="letter-footer">
+      <div class="nav-group">
+        <button class="nav-btn" id="prevPageBtn" onclick="changePage(-1)">⬅ Trang trước</button>
+        <span class="page-indicator" id="pageIndicator">Trang 1 / 5</span>
+        <button class="nav-btn" id="nextPageBtn" onclick="changePage(1)">Trang tiếp ➔</button>
+      </div>
+
+      <div class="footer-actions">
+        <button class="cheer-btn" id="cheerBtn">🎉 Thả tim</button>
+        <button class="bottom-close-x" id="closeBottomBtn">✕ Đóng</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="floating-toast" id="toastMsg">🌸 Chúc Mừng Ngày 20/10! 🌸</div>
+
+<script>
+const DANH_SACH_ANH = [
+  { img: "", name: "", caption: "", note: "" },
+  { img: "", name: "", caption: "", note: "" },
+  { img: "", name: "", caption: "", note: "" },
+  { img: "", name: "", caption: "", note: "" },
+  { img: "", name: "", caption: "", note: "" },
+  { img: "", name: "", caption: "", note: "" },
+  { img: "", name: "", caption: "", note: "" },
+  { img: "", name: "", caption: "", note: "" },
+  { img: "", name: "", caption: "", note: "" },
+  { img: "", name: "", caption: "", note: "" }
+];
+
+const girlsGallery = document.getElementById('girlsGallery');
+girlsGallery.innerHTML = DANH_SACH_ANH.map((item, idx) => {
+  const numStr = String(idx + 1).padStart(2, '0');
+  return `
+  <div class="scrapbook-item">
+    <div class="photo-frame-wrap">
+      <div class="washi-tape"></div>
+      <div class="photo-frame">
+        <img src="${item.img}" alt="${item.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+        <div class="img-fallback" style="display:none">
+          📷 Ảnh #${numStr}
+        </div>
+      </div>
+    </div>
+    <div class="caption-card">
+      <div class="girl-number">#${numStr}</div>
+      <div class="girl-name">${item.name}</div>
+      <div class="girl-caption">${item.caption}</div>
+      <div class="girl-quote">${item.note}</div>
+    </div>
+  </div>
+`}).join('');
+
+let currentPage = 1;
+const totalPages = 5;
+
+function goToPage(pageNumber) {
+  currentPage = Math.max(1, Math.min(totalPages, pageNumber));
+  for (let i = 1; i <= totalPages; i++) {
+    document.getElementById('page' + i).classList.toggle('active', i === currentPage);
+  }
+  const tabBtns = document.querySelectorAll('.tab-dot-btn');
+  tabBtns.forEach((btn, idx) => {
+    btn.classList.toggle('active', idx + 1 === currentPage);
+  });
+  document.getElementById('pageIndicator').textContent = `Trang ${currentPage} / ${totalPages}`;
+  document.getElementById('prevPageBtn').disabled = (currentPage === 1);
+  document.getElementById('nextPageBtn').disabled = (currentPage === totalPages);
+  document.getElementById('letterScroll').scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function changePage(step) {
+  goToPage(currentPage + step);
+}
+goToPage(1);
+
+const canvas = document.getElementById('vortexCanvas');
+const ctx = canvas.getContext('2d', { alpha: true });
+const subText = document.getElementById('subText');
+const enterBtnWrap = document.getElementById('enterBtnWrap');
+const heroUi = document.getElementById('heroUi');
+const letterModal = document.getElementById('letterModal');
+const openLetterBtn = document.getElementById('openLetterBtn');
+const closeTopBtn = document.getElementById('closeTopBtn');
+const closeBottomBtn = document.getElementById('closeBottomBtn');
+const cheerBtn = document.getElementById('cheerBtn');
+const toastMsg = document.getElementById('toastMsg');
+
+let W = window.innerWidth;
+let H = window.innerHeight;
+canvas.width = W;
+canvas.height = H;
+
+window.addEventListener('resize', () => {
+  W = window.innerWidth;
+  H = window.innerHeight;
+  canvas.width = W;
+  canvas.height = H;
+});
+
+function createNaturalRoseSprite() {
+  const c = document.createElement('canvas');
+  const S = 340;
+  c.width = S;
+  c.height = S;
+  const g = c.getContext('2d');
+  const cx = S / 2;
+  const cy = S / 2 + 10;
+
+  const petals = [
+    { a: 2.3, d: 78, rx: 66, ry: 46, t: -0.3, c1: '#ffe5d4', c2: '#fffdfa', edge: '#c9a654' },
+    { a: 0.7, d: 75, rx: 64, ry: 44, t: 0.25, c1: '#ffdfcc', c2: '#fffcf8', edge: '#cca856' },
+    { a: 3.9, d: 70, rx: 62, ry: 45, t: -0.2, c1: '#ffd6c4', c2: '#fff9f5', edge: '#cfa958' },
+    { a: 5.2, d: 66, rx: 58, ry: 42, t: 0.15, c1: '#ffd2c2', c2: '#fff7f2', edge: '#d1ab5a' },
+    { a: 1.5, d: 64, rx: 58, ry: 40, t: 0.1, c1: '#ffcabd', c2: '#fff4ef', edge: '#d4af5f' },
+
+    { a: 0.2, d: 48, rx: 54, ry: 38, t: -0.15, c1: '#ffb8b8', c2: '#ffece8', edge: '#d8b465' },
+    { a: 1.3, d: 46, rx: 52, ry: 37, t: 0.2, c1: '#ffb3ba', c2: '#ffeae6', edge: '#dbb768' },
+    { a: 2.5, d: 50, rx: 55, ry: 38, t: -0.1, c1: '#ff9ebb', c2: '#ffe6ec', edge: '#deb96a' },
+    { a: 3.6, d: 47, rx: 52, ry: 36, t: 0.12, c1: '#ffa6be', c2: '#ffe8ee', edge: '#dfb96b' },
+    { a: 4.7, d: 45, rx: 50, ry: 36, t: -0.18, c1: '#ff9ebc', c2: '#ffe4eb', edge: '#e1bc6e' },
+    { a: 5.7, d: 46, rx: 52, ry: 37, t: 0.08, c1: '#ffa3be', c2: '#ffe6ed', edge: '#e2bd70' },
+
+    { a: 0.6, d: 28, rx: 40, ry: 28, t: 0.1, c1: '#ff8eb3', c2: '#ffd9e4', edge: '#e5c378' },
+    { a: 1.9, d: 29, rx: 41, ry: 29, t: -0.1, c1: '#ff85ad', c2: '#ffd4e0', edge: '#e7c67c' },
+    { a: 3.1, d: 27, rx: 38, ry: 27, t: 0.15, c1: '#ff8ab0', c2: '#ffd6e2', edge: '#e8c77e' },
+    { a: 4.3, d: 28, rx: 40, ry: 28, t: -0.12, c1: '#ff80aa', c2: '#ffd1de', edge: '#e9c980' },
+    { a: 5.5, d: 26, rx: 37, ry: 27, t: 0.05, c1: '#ff88af', c2: '#ffd5e1', edge: '#eaca82' },
+
+    { a: 0.9, d: 12, rx: 26, ry: 18, t: 0, c1: '#ff70a0', c2: '#ffc4d6', edge: '#edd08a' },
+    { a: 2.6, d: 14, rx: 27, ry: 19, t: 0.1, c1: '#ff6b9c', c2: '#ffc0d3', edge: '#eed28d' },
+    { a: 4.2, d: 12, rx: 25, ry: 18, t: -0.1, c1: '#ff73a2', c2: '#ffc6d8', edge: '#efd390' },
+    { a: 5.8, d: 11, rx: 24, ry: 17, t: 0, c1: '#ff6699', c2: '#ffbdd0', edge: '#f0d592' }
+  ];
+
+  petals.forEach(p => {
+    const px = cx + Math.cos(p.a) * p.d;
+    const py = cy + Math.sin(p.a) * p.d * 0.78;
+
+    g.save();
+    g.translate(px, py);
+    g.rotate(p.a + Math.PI / 2 + p.t);
+
+    g.beginPath();
+    g.moveTo(-p.rx * 0.65, p.ry * 0.45);
+    g.bezierCurveTo(-p.rx * 1.05, -p.ry * 0.1, -p.rx * 0.75, -p.ry * 0.95, -p.rx * 0.18, -p.ry * 0.92);
+    g.quadraticCurveTo(0, -p.ry * 1.06, p.rx * 0.22, -p.ry * 0.9);
+    g.bezierCurveTo(p.rx * 0.8, -p.ry * 0.92, p.rx * 1.05, -p.ry * 0.05, p.rx * 0.65, p.ry * 0.45);
+    g.quadraticCurveTo(0, p.ry * 0.75, -p.rx * 0.65, p.ry * 0.45);
+    g.closePath();
+
+    const grad = g.createRadialGradient(0, 4, 3, 0, -p.ry * 0.25, p.rx * 1.05);
+    grad.addColorStop(0, p.c1);
+    grad.addColorStop(0.72, p.c2);
+    grad.addColorStop(1, '#ffffff');
+
+    g.fillStyle = grad;
+    g.fill();
+
+    g.lineWidth = 1.6;
+    g.strokeStyle = p.edge;
+    g.stroke();
+    g.restore();
+  });
+
+  const core = g.createRadialGradient(cx, cy - 3, 2, cx, cy - 3, 28);
+  core.addColorStop(0, '#ff5c93');
+  core.addColorStop(0.65, '#ff94b8');
+  core.addColorStop(1, 'rgba(255,180,205,0)');
+  g.fillStyle = core;
+  g.beginPath();
+  g.arc(cx, cy - 3, 28, 0, Math.PI * 2);
+  g.fill();
+
+  return c;
+}
+
+let activeSprite = createNaturalRoseSprite();
+
+const autoImg = new Image();
+autoImg.onload = () => { activeSprite = autoImg; };
+autoImg.src = 'hoa.png';
+
+let mode = 'cluster';
+let transitionProgress = 0;
+let startTime = performance.now();
+
+const TOTAL_ROSES = 72;
+const roses = [];
+
+for (let i = 0; i < TOTAL_ROSES; i++) {
+  const ratio = i / TOTAL_ROSES;
+  const phi = Math.acos(1 - 2 * (i + 0.5) / TOTAL_ROSES);
+  const theta = Math.PI * (1 + Math.sqrt(5)) * i;
+
+  const clusterR = 75 + (i % 5) * 16;
+  const arm = i % 3;
+  const maxScreenSpan = Math.max(W, H) * 0.64;
+  const vortexOrbit = 35 + Math.pow(ratio, 0.82) * maxScreenSpan;
+
+  roses.push({
+    phi,
+    theta,
+    clusterR,
+    vortexAngle: ratio * Math.PI * 5.2 + arm * ((Math.PI * 2) / 3),
+    vortexOrbit,
+    vortexSpeed: 0.004 + (1 - ratio) * 0.005,
+    vortexZ: (ratio - 0.5) * 220,
+    selfRot: Math.random() * Math.PI * 2,
+    selfRotSpeed: (Math.random() - 0.5) * 0.008,
+    baseScale: 0.95 + Math.pow(ratio, 0.7) * 1.15
+  });
+}
+
+const sparkles = Array.from({ length: 38 }, () => ({
+  x: Math.random() * W,
+  y: Math.random() * H,
+  r: 1.6 + Math.random() * 2.4,
+  phase: Math.random() * Math.PI * 2,
+  vy: -0.25 - Math.random() * 0.35
+}));
+
+const celebrationParticles = [];
+
+function spawnCelebration(count = 14) {
+  if (celebrationParticles.length > 36) {
+    celebrationParticles.splice(0, 14);
+  }
+  const icons = ['🌸', '💖', '✨', '🎓', '💯'];
+  for (let i = 0; i < count; i++) {
+    celebrationParticles.push({
+      x: W / 2 + (Math.random() - 0.5) * 180,
+      y: H / 2 + (Math.random() - 0.5) * 90,
+      vx: (Math.random() - 0.5) * 9,
+      vy: -3.5 - Math.random() * 6.5,
+      gravity: 0.16,
+      icon: icons[i % icons.length],
+      size: 18 + Math.random() * 10,
+      life: 1
+    });
+  }
+}
+
+function triggerVortexBloom() {
+  if (mode !== 'cluster') return;
+  mode = 'vortex';
+  subText.innerHTML = '✨ Hoa toả sắc lốc xoáy ✨';
+  enterBtnWrap.classList.add('visible');
+}
+
+setTimeout(triggerVortexBloom, 2300);
+canvas.addEventListener('click', triggerVortexBloom);
+
+function playGentleChime() {
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    const aCtx = new AudioCtx();
+    const notes = [523.25, 659.25, 783.99, 1046.5];
+    notes.forEach((freq, idx) => {
+      const osc = aCtx.createOscillator();
+      const gain = aCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const now = aCtx.currentTime + idx * 0.15;
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.exponentialRampToValueAtTime(0.09, now + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.9);
+      osc.connect(gain);
+      gain.connect(aCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.95);
+    });
+  } catch (e) {}
+}
+
+function closeLetter() {
+  letterModal.classList.remove('open');
+  heroUi.classList.remove('hide');
+}
+
+openLetterBtn.addEventListener('click', () => {
+  playGentleChime();
+  goToPage(1);
+  heroUi.classList.add('hide');
+  letterModal.classList.add('open');
+  spawnCelebration(14);
+});
+
+closeTopBtn.addEventListener('click', closeLetter);
+closeBottomBtn.addEventListener('click', closeLetter);
+
+cheerBtn.addEventListener('click', () => {
+  playGentleChime();
+  spawnCelebration(14);
+  toastMsg.classList.add('show');
+  setTimeout(() => toastMsg.classList.remove('show'), 3000);
+});
+
+function animate(now) {
+  requestAnimationFrame(animate);
+  const elapsed = (now - startTime) * 0.001;
+
+  ctx.clearRect(0, 0, W, H);
+
+  if (mode === 'vortex' && transitionProgress < 1) {
+    transitionProgress = Math.min(1, transitionProgress + 0.015);
+  }
+  const easeT = 1 - Math.pow(1 - transitionProgress, 3);
+
+  ctx.fillStyle = '#ffe2c8';
+  for (let i = 0; i < sparkles.length; i++) {
+    const s = sparkles[i];
+    s.y += s.vy;
+    if (s.y < -8) s.y = H + 8;
+    ctx.globalAlpha = 0.25 + 0.55 * Math.abs(Math.sin(elapsed * 1.8 + s.phase));
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  const centerX = W * 0.5;
+  const centerY = H * 0.5;
+  const responsiveScale = Math.min(W, H) < 650 ? 0.72 : 1;
+
+  for (let i = 0; i < TOTAL_ROSES; i++) {
+    const r = roses[i];
+    const rotTheta = r.theta + elapsed * 0.5;
+    const cx3d = r.clusterR * Math.sin(r.phi) * Math.cos(rotTheta);
+    const cy3d = r.clusterR * Math.cos(r.phi);
+    const cz3d = r.clusterR * Math.sin(r.phi) * Math.sin(rotTheta);
+
+    r.vortexAngle += r.vortexSpeed;
+    const orbitR = r.vortexOrbit * responsiveScale;
+    const vx3d = Math.cos(r.vortexAngle) * orbitR * 1.12;
+    const vy3d = Math.sin(r.vortexAngle) * orbitR * 0.88;
+    const vz3d = r.vortexZ;
+
+    r.curX = cx3d * (1 - easeT) + vx3d * easeT;
+    r.curY = cy3d * (1 - easeT) + vy3d * easeT;
+    r.curZ = cz3d * (1 - easeT) + vz3d * easeT;
+    r.selfRot += r.selfRotSpeed;
+  }
+
+  roses.sort((a, b) => b.curZ - a.curZ);
+
+  const fov = 560;
+  for (let i = 0; i < TOTAL_ROSES; i++) {
+    const r = roses[i];
+    const scale3d = fov / (fov + r.curZ + 250);
+    const screenX = centerX + r.curX * scale3d;
+    const screenY = centerY + r.curY * scale3d;
+
+    const sizeScale = (0.58 * (1 - easeT) + r.baseScale * easeT) * scale3d;
+    const drawSize = 310 * sizeScale;
+
+    ctx.save();
+    ctx.translate(screenX, screenY);
+    ctx.rotate(r.selfRot);
+    ctx.drawImage(activeSprite, -drawSize * 0.5, -drawSize * 0.5, drawSize, drawSize);
+    ctx.restore();
+  }
+
+  for (let i = celebrationParticles.length - 1; i >= 0; i--) {
+    const p = celebrationParticles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += p.gravity;
+    p.life -= 0.024;
+    if (p.life <= 0) {
+      celebrationParticles.splice(i, 1);
+      continue;
+    }
+    ctx.globalAlpha = p.life;
+    ctx.font = `${p.size}px sans-serif`;
+    ctx.fillText(p.icon, p.x, p.y);
+  }
+  ctx.globalAlpha = 1;
+}
+
+requestAnimationFrame(animate);
+</script>
+</body>
+</html>
